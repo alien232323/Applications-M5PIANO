@@ -1,11 +1,13 @@
 #include <M5Stack.h>
 #include <Wire.h>
 
-#include <Adafruit_NeoPixel.h>
-#define PIN            2
+#include <FastLED.h>
+// #include <Adafruit_NeoPixel.h>
+#define LED_PIN            2
 
-#define NUMPIXELS     29
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+#define NUM_LEDS_PER_STRIP     29
+CRGB Leds[NUM_LEDS_PER_STRIP];
+// Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 #define LF        0x0A //New Line
 #define CR        0x0D //Carriage  return
@@ -79,8 +81,8 @@ void  Init_TS20(void); //Initialize TS20
 
 
 byte key[4];
-#define pRed pixels.Color(5,0,0)
-#define pBlack pixels.Color(0,0,0)
+// #define pRed pixels.Color(5,0,0)
+// #define pBlack pixels.Color(0,0,0)
 
 void setup() {
 
@@ -96,7 +98,9 @@ void setup() {
   key[3] = 0;
   pinMode(2, OUTPUT);
   digitalWrite(2, HIGH);
-  pixels.begin();
+  FastLED.addLeds<NEOPIXEL, LED_PIN>(Leds, NUM_LEDS_PER_STRIP);
+  FastLED.setBrightness(10);
+  // pixels.begin();
 
 
   M5.Lcd.fillScreen(BLACK);
@@ -107,16 +111,18 @@ void setup() {
 
   for (int i = 0; i < 29; i++)
   {
-    pixels.setPixelColor(i, pRed);
+    Leds[i] = CRGB::Red;
+    // pixels.setPixelColor(i, pRed);
     delay(20);
-    pixels.show();
+    FastLED.show();
   }
   delay(1000);
   for (int i = 0; i < 29; i++)
   {
-    pixels.setPixelColor(i, pBlack);
+    Leds[i] = CRGB::Black;
+    // FastLED.setPixelColor(i, pBlack);
     delay(10);
-    pixels.show();
+    FastLED.show();
   }
 }
 
@@ -170,218 +176,269 @@ void loop() {
   M5.Lcd.setCursor(1, 50);
   M5.Lcd.printf("%d,%d,%d,%d,%d,%d   ", data0, data1, data2, data3, data4, data5);
 
-  for (int i = 0; i < 28; i++)
+  for (int i = 0; i < 29; i++)
   {
-    pixels.setPixelColor(i, pBlack);
+    Leds[i] = CRGB::Black;
+    // pixels.setPixelColor(i, pBlack);
   }
 
   if ((data0 & 0x10) == 0x10) {
     Set_Bit(key[0], 0);
-    pixels.setPixelColor(0, pRed);
+    Leds[0] = CRGB::Red;
+    // pixels.setPixelColor(0, pRed);
     M5.Speaker.tone(NOTE_DL1, 20);
   } else {
-    pixels.setPixelColor(0, pBlack);
+    Leds[0] = CRGB::Black;
+    // pixels.setPixelColor(0, pBlack);
     Clr_Bit(key[0], 0);
   }
   if ((data0 & 0x20) == 0x20) {
     Set_Bit(key[0], 1);
-    pixels.setPixelColor(1, pRed);
+    Leds[1] = CRGB::Red;
+    // pixels.setPixelColor(1, pRed);
     M5.Speaker.tone(NOTE_DL1, 20);
   } else {
-    pixels.setPixelColor(1, pBlack);
+    Leds[1] = CRGB::Black;
+    // pixels.setPixelColor(1, pBlack);
     Clr_Bit(key[0], 1);
   }
   if ((data0 & 0x40) == 0x40) {
     Set_Bit(key[0], 2);
-    pixels.setPixelColor(2, pRed);
+    Leds[2] = CRGB::Red;
+    // pixels.setPixelColor(2, pRed);
     M5.Speaker.tone(NOTE_DL2, 20);
   } else {
-    pixels.setPixelColor(2, pBlack);
+    Leds[2] = CRGB::Black;
+    // pixels.setPixelColor(2, pBlack);
     Clr_Bit(key[0], 2);
   }
   if ((data1 & 0x01) == 0x01) {
     Set_Bit(key[0], 3);
-    pixels.setPixelColor(3, pRed);
+    Leds[3] = CRGB::Red;
+    // pixels.setPixelColor(3, pRed);
     M5.Speaker.tone(NOTE_DL2, 20);
   } else {
-    pixels.setPixelColor(3, pBlack);
+    Leds[3] = CRGB::Black;
+    // pixels.setPixelColor(3, pBlack);
     Clr_Bit(key[0], 3);
   }
   if ((data1 & 0x02) == 0x02) {
     Set_Bit(key[0], 4);
-    pixels.setPixelColor(4, pRed);
+    Leds[4] = CRGB::Red;
+    // pixels.setPixelColor(4, pRed);
     M5.Speaker.tone(NOTE_DL3, 20);
   } else {
-    pixels.setPixelColor(4, pBlack);
+    Leds[4] = CRGB::Black;
+    // pixels.setPixelColor(4, pBlack);
     Clr_Bit(key[0], 4);
   }
 
   if ((data2 & 0x04) == 0x04) {
     Set_Bit(key[0], 5);
-    pixels.setPixelColor(6, pRed);
+    Leds[6] = CRGB::Red;
+    // pixels.setPixelColor(6, pRed);
     M5.Speaker.tone(NOTE_DL4, 20);
   } else {
-    pixels.setPixelColor(6, pBlack);
+    Leds[6] = CRGB::Black;
+    // pixels.setPixelColor(6, pBlack);
     Clr_Bit(key[0], 5);
   }
   if ((data2 & 0x08) == 0x08) {
     Set_Bit(key[0], 6);
-    pixels.setPixelColor(7, pRed);
+    Leds[7] = CRGB::Red;
+    // pixels.setPixelColor(7, pRed);
     M5.Speaker.tone(NOTE_DL4, 20);
   } else {
-    pixels.setPixelColor(7, pBlack);
+    Leds[7] = CRGB::Black;
+    // pixels.setPixelColor(7, pBlack);
     Clr_Bit(key[0], 6);
   }
   if ((data2 & 0x10) == 0x10) {
     Set_Bit(key[0], 7);
-    pixels.setPixelColor(8, pRed);
+    Leds[8] = CRGB::Red;
+    // pixels.setPixelColor(8, pRed);
     M5.Speaker.tone(NOTE_DL5, 20);
   } else {
-    pixels.setPixelColor(8, pBlack);
+    Leds[8] = CRGB::Black;
+    // pixels.setPixelColor(8, pBlack);
     Clr_Bit(key[0], 7);
   }
 
   if ((data0 & 0x01) == 0x01) {
     Set_Bit(key[1], 0);
-    pixels.setPixelColor(9, pRed);
+    Leds[9] = CRGB::Red;
+    // pixels.setPixelColor(9, pRed);
     M5.Speaker.tone(NOTE_DL5, 20);
   } else {
-    pixels.setPixelColor(9, pBlack);
+    Leds[9] = CRGB::Black;
+    // pixels.setPixelColor(9, pBlack);
     Clr_Bit(key[1], 0);
   }
   if ((data0 & 0x02) == 0x02) {
     Set_Bit(key[1], 1);
-    pixels.setPixelColor(10, pRed);
+    Leds[10] = CRGB::Red;
+    // pixels.setPixelColor(10, pRed);
     M5.Speaker.tone(NOTE_DL6, 20);
   } else {
-    pixels.setPixelColor(10, pBlack);
+    Leds[10] = CRGB::Black;
+    // pixels.setPixelColor(10, pBlack);
     Clr_Bit(key[1], 1);
   }
   if ((data0 & 0x04) == 0x04) {
     Set_Bit(key[1], 2);
-    pixels.setPixelColor(11, pRed);
+    Leds[11] = CRGB::Red;
+    // pixels.setPixelColor(11, pRed);
     M5.Speaker.tone(NOTE_DL6, 20);
   } else {
-    pixels.setPixelColor(11, pBlack);
+    Leds[11] = CRGB::Black;
+    // pixels.setPixelColor(11, pBlack);
     Clr_Bit(key[1], 2);
   }
   if ((data0 & 0x08) == 0x08) {
     Set_Bit(key[1], 3);
-    pixels.setPixelColor(12, pRed);
+    Leds[12] = CRGB::Red;
+    // pixels.setPixelColor(12, pRed);
     M5.Speaker.tone(NOTE_DL7, 20);
   } else {
-    pixels.setPixelColor(12, pBlack);
+    Leds[12] = CRGB::Black;
+    // pixels.setPixelColor(12, pBlack);
     Clr_Bit(key[1], 3);
   }
   if ((data3 & 0x10) == 0x10) {
     Set_Bit(key[1], 4);
-    pixels.setPixelColor(14, pRed);
+    Leds[14] = CRGB::Red;
+    // pixels.setPixelColor(14, pRed);
     M5.Speaker.tone(NOTE_D1, 20);
   } else {
-    pixels.setPixelColor(14, pBlack);
+    Leds[14] = CRGB::Black;
+    // pixels.setPixelColor(14, pBlack);
     Clr_Bit(key[1], 4);
   }
   if ((data3 & 0x20) == 0x20) {
     Set_Bit(key[1], 5);
-    pixels.setPixelColor(15, pRed);
+    Leds[15] = CRGB::Red;
+    // pixels.setPixelColor(15, pRed);
     M5.Speaker.tone(NOTE_D1, 20);
   } else {
-    pixels.setPixelColor(15, pBlack);
+    Leds[15] = CRGB::Black;
+    // pixels.setPixelColor(15, pBlack);
     Clr_Bit(key[1], 5);
   }
   if ((data3 & 0x40) == 0x40) {
     Set_Bit(key[1], 6);
-    pixels.setPixelColor(16, pRed);
+    Leds[16] = CRGB::Red;
+    // pixels.setPixelColor(16, pRed);
     M5.Speaker.tone(NOTE_D2, 20);
   } else {
-    pixels.setPixelColor(16, pBlack);
+    Leds[16] = CRGB::Black;
+    // pixels.setPixelColor(16, pBlack);
     Clr_Bit(key[1], 6);
   }
   if ((data4 & 0x01) == 0x01) {
     Set_Bit(key[1], 7);
-    pixels.setPixelColor(17, pRed);
+    Leds[17] = CRGB::Red;
+    // pixels.setPixelColor(17, pRed);
     M5.Speaker.tone(NOTE_D2, 20);
   } else {
-    pixels.setPixelColor(17, pBlack);
+    Leds[17] = CRGB::Black;
+    // pixels.setPixelColor(17, pBlack);
     Clr_Bit(key[1], 7);
   }
 
   if ((data4 & 0x02) == 0x02) {
     Set_Bit(key[2], 0);
-    pixels.setPixelColor(18, pRed);
+    Leds[18] = CRGB::Red;
+    // pixels.setPixelColor(18, pRed);
     M5.Speaker.tone(NOTE_D3, 20);
   } else {
-    pixels.setPixelColor(18, pBlack);
+    Leds[18] = CRGB::Black;
+    // pixels.setPixelColor(18, pBlack);
     Clr_Bit(key[2], 0);
   }
   if ((data5 & 0x02) == 0x02) {
     Set_Bit(key[2], 1);
-    pixels.setPixelColor(20, pRed);
+    Leds[20] = CRGB::Red;
+    // pixels.setPixelColor(20, pRed);
     M5.Speaker.tone(NOTE_D4, 20);
   } else {
-    pixels.setPixelColor(20, pBlack);
+    Leds[20] = CRGB::Black;
+    // pixels.setPixelColor(20, pBlack);
     Clr_Bit(key[2], 1);
   }
   if ((data5 & 0x04) == 0x04) {
     Set_Bit(key[2], 2);
-    pixels.setPixelColor(21, pRed);
+    Leds[21] = CRGB::Red;
+    // pixels.setPixelColor(21, pRed);
     M5.Speaker.tone(NOTE_D4, 20);
   } else {
-    pixels.setPixelColor(21, pBlack);
+    Leds[21] = CRGB::Black;
+    // pixels.setPixelColor(21, pBlack);
     Clr_Bit(key[2], 2);
   }
   if ((data5 & 0x08) == 0x08) {
     Set_Bit(key[2], 3);
-    pixels.setPixelColor(22, pRed);
+    Leds[22] = CRGB::Red;
+    // pixels.setPixelColor(22, pRed);
     M5.Speaker.tone(NOTE_D5, 20);
   } else {
-    pixels.setPixelColor(22, pBlack);
+    Leds[22] = CRGB::Black;
+    // pixels.setPixelColor(22, pBlack);
     Clr_Bit(key[2], 3);
   }
   if ((data5 & 0x10) == 0x10) {
     Set_Bit(key[2], 4);
-    pixels.setPixelColor(23, pRed);
+    Leds[23] = CRGB::Red;
+    // pixels.setPixelColor(23, pRed);
     M5.Speaker.tone(NOTE_D5, 20);
   } else {
-    pixels.setPixelColor(23, pBlack);
+    Leds[23] = CRGB::Black;
+    // pixels.setPixelColor(23, pBlack);
     Clr_Bit(key[2], 4);
   }
   if ((data3 & 0x01) == 0x01) {
     Set_Bit(key[2], 5);
-    pixels.setPixelColor(24, pRed);
+    Leds[24] = CRGB::Red;
+    // pixels.setPixelColor(24, pRed);
     M5.Speaker.tone(NOTE_D6, 20);
   } else {
-    pixels.setPixelColor(24, pBlack);
+    Leds[24] = CRGB::Black;
+    // pixels.setPixelColor(24, pBlack);
     Clr_Bit(key[2], 5);
   }
   if ((data3 & 0x02) == 0x02) {
     Set_Bit(key[2], 6);
-    pixels.setPixelColor(25, pRed);
+    Leds[25] = CRGB::Red;
+    // pixels.setPixelColor(25, pRed);
     M5.Speaker.tone(NOTE_D6, 20);
   } else {
-    pixels.setPixelColor(25, pBlack);
+    Leds[25] = CRGB::Black;
+    // pixels.setPixelColor(25, pBlack);
     Clr_Bit(key[2], 6);
   }
   if ((data3 & 0x04) == 0x04) {
     Set_Bit(key[2], 7);
-    pixels.setPixelColor(26, pRed);
+    Leds[26] = CRGB::Red;
+    // pixels.setPixelColor(26, pRed);
     M5.Speaker.tone(NOTE_D7, 20);
   } else {
-    pixels.setPixelColor(26, pBlack);
+    Leds[26] = CRGB::Black;
+    // pixels.setPixelColor(26, pBlack);
     Clr_Bit(key[2], 7);
   }
 
   if ((data3 & 0x08) == 0x08) {
     Set_Bit(key[3], 0);
-    pixels.setPixelColor(28, pRed);
+    Leds[27] = CRGB::Red;
+    // pixels.setPixelColor(28, pRed);
     M5.Speaker.tone(NOTE_DH1, 20);
   } else {
-    pixels.setPixelColor(28, pBlack);
+    Leds[27] = CRGB::Black;
+    // pixels.setPixelColor(28, pBlack);
     Clr_Bit(key[3], 0);
   }
 
   delay(20);
-  pixels.show();
+  FastLED.show();
 
   M5.update();
 
